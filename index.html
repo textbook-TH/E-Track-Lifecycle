@@ -94,7 +94,7 @@
                     </nav>
 
                     <!-- Logged in user info or status -->
-                    <div id="userBadge" class="hidden items-center bg-slate-800 border border-slate-700 rounded-full py-1 px-3 space-x-2 text-xs">
+                    <div id="userBadge" class="hidden md:flex items-center bg-slate-800 border border-slate-700 rounded-full py-1 px-3 space-x-2 text-xs">
                         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                         <span id="userRoleBadgeText" class="text-slate-300 font-medium">เจ้าหน้าที่ Admin</span>
                         <span class="text-slate-500">|</span>
@@ -102,9 +102,9 @@
                     </div>
 
                     <!-- Auth button in header -->
-                    <button id="authHeaderBtn" onclick="openLoginModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-lg text-sm font-medium transition shadow-sm flex items-center space-x-2">
+                    <button id="authHeaderBtn" onclick="openLoginModal()" class="bg-blue-600 hover:bg-blue-700 text-white p-2 md:px-4 md:py-1.5 rounded-lg text-sm font-medium transition shadow-sm flex items-center space-x-2">
                         <i class="fa-solid fa-user-check text-xs"></i>
-                        <span id="authHeaderBtnText">เข้าสู่ระบบ</span>
+                        <span id="authHeaderBtnText" class="hidden md:inline">เข้าสู่ระบบ</span>
                     </button>
                 </div>
             </div>
@@ -128,14 +128,14 @@
                         <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">
                             จัดการข้อมูลผู้ใช้งาน (สำหรับเจ้าหน้าที่)
                         </h2>
-                        <p class="text-slate-300 text-sm leading-relaxed">
+                        <p class="hidden md:block text-slate-300 text-sm leading-relaxed">
                             ลบ ข้อมูล จัดการ User ในระบบติดตามสถานะการประเมิน
                         </p>
                     </div>
 
                     <!-- Action Button: Batch Delete Users -->
                     <div class="flex flex-wrap items-center gap-3">
-                        <button id="deleteSelectedBtn" onclick="requestDeleteSelected()" disabled class="bg-rose-600/50 cursor-not-allowed text-white font-medium text-sm px-4 py-2.5 rounded-xl shadow-md transition flex items-center space-x-2 border border-rose-500/30 active:scale-95">
+                        <button id="deleteSelectedBtn" onclick="requestDeleteSelected()" disabled class="bg-rose-600/50 cursor-not-allowed text-white font-medium text-sm px-4 py-2.5 rounded-xl shadow-md transition flex items-center space-x-2 border border-rose-500/30 active:scale-95 w-full sm:w-auto justify-center">
                             <i class="fa-solid fa-trash-can text-sm"></i>
                             <span id="deleteSelectedText">ลบรายการที่เลือก (0)</span>
                         </button>
@@ -146,20 +146,30 @@
             <!-- DATA TABLE CONTAINER -->
             <section class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
                 <!-- Table Header Bar -->
-                <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-                    <div class="flex items-center space-x-3">
-                        <h3 class="font-bold text-slate-800 text-base">รายการผู้ใช้ในระบบทั้งหมด</h3>
-                        <span id="recordCountBadge" class="bg-blue-100 text-blue-700 text-xs font-semibold px-2.5 py-0.5 rounded-full">0 รายการ</span>
+                <div class="px-4 md:px-6 py-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-slate-50/50">
+                    <div class="flex items-center justify-between sm:justify-start w-full sm:w-auto space-x-3">
+                        <div class="flex items-center space-x-3">
+                            <h3 class="font-bold text-slate-800 text-base">รายการผู้ใช้ในระบบทั้งหมด</h3>
+                            <span id="recordCountBadge" class="bg-blue-100 text-blue-700 text-xs font-semibold px-2.5 py-0.5 rounded-full">0 รายการ</span>
+                        </div>
                     </div>
-                    <div class="text-xs text-slate-500 flex items-center space-x-1">
-                        <i class="fa-solid fa-user-shield text-blue-500"></i>
-                        <span>ยกเว้นบัญชีผู้ดูแลระบบ (Admin)</span>
+                    
+                    <!-- Select all control on mobile header -->
+                    <div class="flex items-center justify-between pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-200/60">
+                        <div class="flex items-center space-x-2 md:hidden">
+                            <input type="checkbox" id="selectAllCheckboxMobile" onchange="toggleSelectAll(this)" class="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500 cursor-pointer">
+                            <label for="selectAllCheckboxMobile" class="text-xs font-semibold text-slate-600 cursor-pointer">เลือกทั้งหมด</label>
+                        </div>
+                        <div class="text-xs text-slate-500 flex items-center space-x-1 ml-auto sm:ml-0">
+                            <i class="fa-solid fa-user-shield text-blue-500"></i>
+                            <span>ยกเว้นบัญชีผู้ดูแลระบบ (Admin)</span>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Table Content -->
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
+                <!-- Desktop Table View (Hidden on mobile) -->
+                <div class="hidden md:block overflow-x-auto min-w-full">
+                    <table class="w-full text-left border-collapse min-w-full">
                         <thead>
                             <tr class="bg-slate-50 text-slate-500 font-semibold text-xs border-b border-slate-200/70">
                                 <th class="py-3.5 px-4 text-center w-12">
@@ -172,9 +182,14 @@
                             </tr>
                         </thead>
                         <tbody id="userTableBody" class="divide-y divide-slate-100 text-sm">
-                            <!-- Dynamic rows injected securely by JavaScript -->
+                            <!-- Dynamic desktop rows injected securely by JavaScript -->
                         </tbody>
                     </table>
+                </div>
+
+                <!-- Mobile Card-List View (Shown only on mobile) -->
+                <div id="userMobileList" class="block md:hidden divide-y divide-slate-100 p-3 space-y-3">
+                    <!-- Dynamic mobile card items injected securely by JavaScript -->
                 </div>
 
                 <!-- Empty State -->
@@ -191,7 +206,8 @@
         <!-- FOOTER -->
         <footer class="bg-[#0f172a] border-t border-slate-800 py-4 mt-8">
             <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-400">
-                &copy; 2026 งานเทคโนโลยีการศึกษา คณะวิศวกรรมศาสตร์ สถาบันเทคโนโลยีพระจอมเกล้าเจ้าคุณทหารลาดกระบัง
+                <span class="block md:inline">&copy; 2026 งานเทคโนโลยีการศึกษา คณะวิศวกรรมศาสตร์</span>
+                <span class="block md:inline">สถาบันเทคโนโลยีพระจอมเกล้าเจ้าคุณทหารลาดกระบัง</span>
             </div>
         </footer>
     </div>
@@ -215,11 +231,11 @@
                 </div>
 
                 <!-- Login Form -->
-                <form id="loginForm" onsubmit="handleLoginSubmit(event)" class="space-y-4">
+                <form id="loginForm" onsubmit="handleLoginSubmit(event)" class="space-y-4" autocomplete="off">
                     <div class="space-y-1.5">
                         <label class="block text-xs font-semibold text-slate-700">อีเมล KMITL</label>
                         <div class="relative">
-                            <input type="email" id="loginEmail" required value="" placeholder="username@kmitl.ac.th" autocomplete="username"
+                            <input type="email" id="loginEmail" required value="" placeholder="username@kmitl.ac.th" autocomplete="off"
                                 class="w-full px-3.5 py-2.5 bg-blue-50/50 border border-blue-200/80 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition">
                         </div>
                     </div>
@@ -227,7 +243,7 @@
                     <div class="space-y-1.5">
                         <label class="block text-xs font-semibold text-slate-700">รหัสผ่าน</label>
                         <div class="relative">
-                            <input type="password" id="loginPassword" required value="" placeholder="••••••••" autocomplete="current-password"
+                            <input type="password" id="loginPassword" required value="" placeholder="••••••••" autocomplete="new-password"
                                 class="w-full pl-3.5 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition">
                             <button type="button" onclick="togglePasswordVisibility('loginPassword', 'eyeIcon1')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1">
                                 <i id="eyeIcon1" class="fa-regular fa-eye text-sm"></i>
@@ -275,7 +291,13 @@
         
         let supabaseClient = null;
         if (window.supabase && typeof window.supabase.createClient === 'function') {
-            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+                auth: {
+                    storage: window.sessionStorage,
+                    autoRefreshToken: true,
+                    persistSession: true
+                }
+            });
         }
 
         // Security & State Variables
@@ -316,9 +338,10 @@
         window.addEventListener('DOMContentLoaded', async () => {
             // Check existing active session securely
             await checkExistingAdminSession();
-            await fetchUsersFromSupabase();
-
-            if (!isLoggedIn) {
+            
+            if (isLoggedIn) {
+                await fetchUsersFromSupabase();
+            } else {
                 openLoginModal();
             }
         });
@@ -344,7 +367,6 @@
                     currentAdminId = user.id;
                     updateUIForAdminState(true);
                 } else {
-                    // Sign out unauthorized lingering sessions
                     await supabaseClient.auth.signOut();
                 }
             } catch (err) {
@@ -358,7 +380,6 @@
         async function checkAdminRole(user) {
             if (!user) return false;
 
-            // 1. Check user metadata / app metadata flags
             const role = user.app_metadata?.role || user.user_metadata?.role || user.role || '';
             const isAdminFlag = user.app_metadata?.is_admin === true || user.user_metadata?.is_admin === true;
 
@@ -366,7 +387,6 @@
                 return true;
             }
 
-            // 2. Check RPC admin authorization function if available
             if (supabaseClient) {
                 try {
                     const { data: rpcIsAdmin, error } = await supabaseClient.rpc('is_admin');
@@ -378,7 +398,6 @@
                 }
             }
 
-            // Default fail closed for non-admin accounts
             return false;
         }
 
@@ -386,6 +405,13 @@
          * Security Fix 2: Type validation and String normalization for Database Payloads
          */
         async function fetchUsersFromSupabase() {
+            // Prevent RPC execution when user is not authenticated as Admin
+            if (!isLoggedIn) {
+                allUsersData = [];
+                renderUserTable();
+                return;
+            }
+
             try {
                 let fetchedUsers = [];
 
@@ -449,15 +475,17 @@
         }
 
         /**
-         * Security Fix 3: Safe rendering & HTML entity escaping inside Table Elements
+         * Security Fix 3: Safe rendering & Responsive Layout for Desktop Table and Mobile Cards
          */
         function renderUserTable() {
             const displayUsers = getFilteredUsers();
             const tbody = document.getElementById('userTableBody');
+            const mobileList = document.getElementById('userMobileList');
             const emptyState = document.getElementById('emptyState');
             const recordCountBadge = document.getElementById('recordCountBadge');
 
             tbody.innerHTML = '';
+            mobileList.innerHTML = '';
             recordCountBadge.textContent = `${displayUsers.length} รายการ`;
 
             if (displayUsers.length === 0) {
@@ -467,15 +495,14 @@
 
                 displayUsers.forEach((user, index) => {
                     const isChecked = selectedUserIds.has(user.id);
-                    const tr = document.createElement('tr');
-                    tr.className = 'hover:bg-slate-50/80 transition text-slate-700 border-b border-slate-100';
-
                     const safeEmail = escapeHtml(user.email);
                     const safeCreatedAt = escapeHtml(user.createdAt);
                     const safeId = escapeHtml(user.id);
                     const initialLetter = safeEmail ? safeEmail.charAt(0).toUpperCase() : 'U';
 
-                    // Using data attributes instead of inline Javascript string parameters to prevent syntax injection
+                    // 1. Desktop Table Row Creation
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-slate-50/80 transition text-slate-700 border-b border-slate-100';
                     tr.innerHTML = `
                         <td class="py-3.5 px-4 text-center">
                             <input type="checkbox" value="${safeId}" ${isChecked ? 'checked' : ''} onchange="toggleUserSelect('${safeId}', this.checked)" class="user-checkbox w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500 cursor-pointer">
@@ -483,13 +510,13 @@
                         <td class="py-3.5 px-4 text-center text-xs font-semibold text-slate-400">${index + 1}</td>
                         <td class="py-3.5 px-6 font-medium text-slate-800">
                             <div class="flex items-center space-x-3">
-                                <div class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xs font-bold border border-blue-100 shadow-sm">
+                                <div class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xs font-bold border border-blue-100 shadow-sm shrink-0">
                                     ${escapeHtml(initialLetter)}
                                 </div>
-                                <span class="text-sm font-medium text-slate-700">${safeEmail}</span>
+                                <span class="text-sm font-medium text-slate-700 break-all">${safeEmail}</span>
                             </div>
                         </td>
-                        <td class="py-3.5 px-6 text-xs text-slate-500">${safeCreatedAt}</td>
+                        <td class="py-3.5 px-6 text-xs text-slate-500 whitespace-nowrap">${safeCreatedAt}</td>
                         <td class="py-3.5 px-6 text-right">
                             <button data-id="${safeId}" data-email="${safeEmail}" onclick="handleSingleDeleteClick(this)" class="text-rose-500 hover:text-rose-700 hover:bg-rose-50 p-2 rounded-lg transition duration-150 inline-flex items-center justify-center" title="ลบผู้ใช้นี้">
                                 <i class="fa-solid fa-trash-can text-sm"></i>
@@ -497,6 +524,33 @@
                         </td>
                     `;
                     tbody.appendChild(tr);
+
+                    // 2. Mobile Responsive Card Creation
+                    const mobileCard = document.createElement('div');
+                    mobileCard.className = `p-3.5 rounded-xl border transition-all duration-200 ${isChecked ? 'bg-blue-50/60 border-blue-200 shadow-xs' : 'bg-slate-50/70 border-slate-200/80 hover:bg-slate-50'}`;
+                    mobileCard.innerHTML = `
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="flex items-start space-x-3 min-w-0 flex-1">
+                                <div class="pt-0.5">
+                                    <input type="checkbox" value="${safeId}" ${isChecked ? 'checked' : ''} onchange="toggleUserSelect('${safeId}', this.checked)" class="user-checkbox w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500 cursor-pointer">
+                                </div>
+                                <div class="min-w-0 flex-1 space-y-1">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-200 text-slate-600">#${index + 1}</span>
+                                        <span class="text-xs font-semibold text-slate-800 truncate">${safeEmail}</span>
+                                    </div>
+                                    <div class="text-[11px] text-slate-500 flex items-center space-x-1 pt-0.5">
+                                        <i class="fa-regular fa-clock text-[10px] text-slate-400"></i>
+                                        <span>สมัครเมื่อ: ${safeCreatedAt}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button data-id="${safeId}" data-email="${safeEmail}" onclick="handleSingleDeleteClick(this)" class="text-rose-500 hover:text-rose-700 hover:bg-rose-100/70 p-2 rounded-lg transition duration-150 flex-shrink-0 active:scale-95" title="ลบผู้ใช้นี้">
+                                <i class="fa-solid fa-trash-can text-sm"></i>
+                            </button>
+                        </div>
+                    `;
+                    mobileList.appendChild(mobileCard);
                 });
             }
             updateSelectAllCheckboxState();
@@ -512,7 +566,6 @@
         async function handleLoginSubmit(event) {
             event.preventDefault();
 
-            // Anti Brute-Force Rate Limiting Check
             const now = Date.now();
             if (now < lockoutUntil) {
                 const remainingSecs = Math.ceil((lockoutUntil - now) / 1000);
@@ -545,7 +598,6 @@
             submitBtn.disabled = true;
 
             try {
-                // Authenticate strictly with Supabase Auth
                 const { data, error } = await supabaseClient.auth.signInWithPassword({
                     email: emailInput,
                     password: passwordInput
@@ -554,7 +606,7 @@
                 if (error || !data || !data.user) {
                     loginFailedAttempts++;
                     if (loginFailedAttempts >= 5) {
-                        lockoutUntil = Date.now() + 30000; // Lock 30 seconds after 5 failed attempts
+                        lockoutUntil = Date.now() + 30000;
                         showToast('ระงับการลองเข้าสู่ระบบชั่วคราว 30 วินาที เนื่องจากป้อนข้อมูลผิดหลายครั้ง', 'danger');
                     } else {
                         showToast(`เข้าสู่ระบบไม่สำเร็จ: ${error ? escapeHtml(error.message) : 'ข้อมูลไม่ถูกต้อง'}`, 'danger');
@@ -563,18 +615,14 @@
                 }
 
                 const user = data.user;
-                
-                // Strictly verify Admin privileges
                 const isAdmin = await checkAdminRole(user);
 
                 if (!isAdmin) {
-                    // Force logout for non-admin unauthorized users
                     await supabaseClient.auth.signOut();
                     showToast('ไม่อนุญาต! บัญชีนี้ไม่มีสิทธิ์ผู้ดูแลระบบ (Admin)', 'danger');
                     return;
                 }
 
-                // Reset security attempt counters on success
                 loginFailedAttempts = 0;
                 lockoutUntil = 0;
 
@@ -582,7 +630,7 @@
                 currentAdminEmail = user.email || emailInput;
                 currentAdminId = user.id;
 
-                // Reset sensitive password input
+                document.getElementById('loginEmail').value = '';
                 document.getElementById('loginPassword').value = '';
 
                 updateUIForAdminState(true);
@@ -606,18 +654,18 @@
 
             if (authenticated) {
                 userBadge.classList.remove('hidden');
-                userBadge.classList.add('flex');
+                userBadge.classList.add('hidden', 'md:flex');
                 document.getElementById('userRoleBadgeText').textContent = 'เจ้าหน้าที่ Admin';
                 document.getElementById('userEmailBadgeText').textContent = escapeHtml(currentAdminEmail);
 
-                authBtn.className = "bg-rose-600 hover:bg-rose-700 text-white px-3.5 py-1.5 rounded-lg text-sm font-medium transition shadow-sm flex items-center space-x-1.5";
+                authBtn.className = "bg-rose-600 hover:bg-rose-700 text-white p-2 md:px-3.5 md:py-1.5 rounded-lg text-sm font-medium transition shadow-sm flex items-center space-x-1.5";
                 authBtnText.textContent = "ออกจากระบบ";
                 authBtn.onclick = logout;
             } else {
                 userBadge.classList.add('hidden');
-                userBadge.classList.remove('flex');
+                userBadge.classList.remove('md:flex');
 
-                authBtn.className = "bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-lg text-sm font-medium transition shadow-sm flex items-center space-x-2";
+                authBtn.className = "bg-blue-600 hover:bg-blue-700 text-white p-2 md:px-4 md:py-1.5 rounded-lg text-sm font-medium transition shadow-sm flex items-center space-x-2";
                 authBtnText.textContent = "เข้าสู่ระบบ";
                 authBtn.onclick = openLoginModal;
             }
@@ -633,14 +681,20 @@
 
             updateUIForAdminState(false);
 
+            // ข้อ 2: ล้างข้อมูลช่องกรอก
             document.getElementById('loginEmail').value = '';
             document.getElementById('loginPassword').value = '';
+
+            allUsersData = [];
+            renderUserTable();
 
             showToast('ออกจากระบบเรียบร้อยแล้ว', 'info');
             openLoginModal();
         }
 
         function openLoginModal() {
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
             document.getElementById('loginModal').classList.remove('hidden');
         }
         function closeLoginModal() {
@@ -670,15 +724,18 @@
         function updateSelectAllCheckboxState() {
             const displayUsers = getFilteredUsers();
             const masterCheckbox = document.getElementById('selectAllCheckbox');
-            if (displayUsers.length > 0 && selectedUserIds.size === displayUsers.length) {
-                masterCheckbox.checked = true;
-                masterCheckbox.indeterminate = false;
-            } else if (selectedUserIds.size > 0) {
-                masterCheckbox.checked = false;
-                masterCheckbox.indeterminate = true;
-            } else {
-                masterCheckbox.checked = false;
-                masterCheckbox.indeterminate = false;
+            const mobileMasterCheckbox = document.getElementById('selectAllCheckboxMobile');
+            
+            const isAllSelected = displayUsers.length > 0 && selectedUserIds.size === displayUsers.length;
+            const isIndeterminate = selectedUserIds.size > 0 && !isAllSelected;
+
+            if (masterCheckbox) {
+                masterCheckbox.checked = isAllSelected;
+                masterCheckbox.indeterminate = isIndeterminate;
+            }
+            if (mobileMasterCheckbox) {
+                mobileMasterCheckbox.checked = isAllSelected;
+                mobileMasterCheckbox.indeterminate = isIndeterminate;
             }
         }
 
@@ -691,10 +748,10 @@
 
             if (count > 0 && isLoggedIn) {
                 btn.disabled = false;
-                btn.className = "bg-rose-600 hover:bg-rose-700 cursor-pointer text-white font-medium text-sm px-4 py-2.5 rounded-xl shadow-md transition flex items-center space-x-2 border border-rose-500/40 active:scale-95";
+                btn.className = "bg-rose-600 hover:bg-rose-700 cursor-pointer text-white font-medium text-sm px-4 py-2.5 rounded-xl shadow-md transition flex items-center space-x-2 border border-rose-500/40 active:scale-95 w-full sm:w-auto justify-center";
             } else {
                 btn.disabled = true;
-                btn.className = "bg-rose-600/50 cursor-not-allowed text-white font-medium text-sm px-4 py-2.5 rounded-xl shadow-md transition flex items-center space-x-2 border border-rose-500/30";
+                btn.className = "bg-rose-600/50 cursor-not-allowed text-white font-medium text-sm px-4 py-2.5 rounded-xl shadow-md transition flex items-center space-x-2 border border-rose-500/30 w-full sm:w-auto justify-center";
             }
         }
 
@@ -715,7 +772,7 @@
             
             const highlightSpan = document.createElement('span');
             highlightSpan.className = 'font-bold text-slate-800';
-            highlightSpan.textContent = email; // Safe textContent injection prevents HTML script execution
+            highlightSpan.textContent = email;
             
             confirmTextEl.appendChild(highlightSpan);
             confirmTextEl.appendChild(document.createTextNode(' ออกจากระบบอย่างถาวร'));
